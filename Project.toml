@@ -3,8 +3,14 @@ uuid = "d6a53a69-57dd-4bf1-83cc-71c4a7042fcf"
 authors = ["Dale-Black <djblack@uci.edu> and contributors"]
 version = "0.1.0"
 
+[deps]
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
+PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+
 [compat]
-julia = "1"
+julia = "1.8"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
