@@ -37,9 +37,9 @@ get_all_studies(ip_address::String="localhost")
 
 #### Example
 ```julia-repl
-julia> study_dict = get_all_studies("128.000.00.00")
+julia> studies_dict = get_all_studies("128.000.00.00")
 
-study_dict = OrderedDict("CTP006" => "e44217cc-498e394b-dc380909-a742a65f-51530d58", "2890" => "30c04e76-4965d9e3-9ffd4fdc-b0e84651-325c9074", more...)
+studies_dict = OrderedDict("CTP006" => ["e44217cc-498e394b-dc380909-a742a65f-51530d58"], "2890" => ["30c04e76-4965d9e3-9ffd4fdc-b0e84651-325c9074", "30c04e76-4965d9e3-9ffd4fdc-b0e84651-895s9231"], more...)
 ```
 """
 function get_all_studies(ip_address::String="localhost")
@@ -66,7 +66,7 @@ function get_all_studies(ip_address::String="localhost")
 end
 
 # ╔═╡ 11082ead-55a8-48e7-9bbe-7856fa8d7903
-study_dict = get_all_studies(ip_address)
+studies_dict = get_all_studies(ip_address)
 
 # ╔═╡ 3540e706-ad58-4af2-b7c0-f83ae19edcd3
 md"""
@@ -88,7 +88,14 @@ get_all_series(
 - `ip_address`: IP address corresponding to the Orthanc server
 
 #### Return
-- `series_dict`: An `OrderedDict` of every study name with its corresponding accession number
+- `series_dict`: An `OrderedDict` of every series name with its corresponding series number
+
+#### Example
+```julia-repl
+julia> series_dict = get_all_series(study_dict, "2475", "128.000.00.00")
+
+series_dict = OrderedDict("1" => ["776d9eb6-34ff4a40-e252e29c-3d3b9806-db6a4d8b"], "2" => ["725fdc65-76d49a59-22f280ef-5c49f76e-9528dbb4", "bacca487-87933763-8d4b8253-aba41c21-cd57cad5"], more...)
+```
 """
 function get_all_series(
 	study_dict::OrderedDict, 
@@ -121,7 +128,12 @@ function get_all_series(
 end
 
 # ╔═╡ 6c3f471d-9a7b-454c-ab56-c19e6f0db07d
-get_all_series(study_dict, "2475", ip_address)
+series_dict = get_all_series(studies_dict, "2475", ip_address)
+
+# ╔═╡ 2b291e5c-dafd-4914-aac7-212c4f8546c4
+md"""
+## Get Instances
+"""
 
 # ╔═╡ Cell order:
 # ╠═d8578dac-9845-11ed-324c-856950ed40c3
@@ -133,3 +145,4 @@ get_all_series(study_dict, "2475", ip_address)
 # ╟─3540e706-ad58-4af2-b7c0-f83ae19edcd3
 # ╠═2c04e17b-9c6d-4a36-985c-c256a4397a8e
 # ╠═6c3f471d-9a7b-454c-ab56-c19e6f0db07d
+# ╟─2b291e5c-dafd-4914-aac7-212c4f8546c4
