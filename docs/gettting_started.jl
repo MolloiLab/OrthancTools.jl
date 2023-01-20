@@ -12,6 +12,27 @@ begin
     using Revise, PlutoUI, DICOM, OrthancTools
 end
 
+# ╔═╡ 03d840a8-b426-4910-be0c-8fd0adb2da16
+title = "Getting Started";
+
+# ╔═╡ 7112e3ff-1037-412c-8df0-f185b16cc749
+"""
++++
+title = "$title"
++++
+""" |> Base.Text
+
+# ╔═╡ fe44a1dd-0e9e-4ab0-905b-391e588af4e2
+md"""
+# $title
+This is an example tutorial showing how to download files from an Orthanc server using Julia. This tutorial can be copied by importing this notebook's URL into Pluto directly.
+"""
+
+# ╔═╡ 05eb11b8-b3a0-4901-b8e5-b84f0656f04f
+md"""
+## Download packages
+"""
+
 # ╔═╡ 89c0b998-6a5a-4fd9-a323-35d96855b2a9
 TableOfContents()
 
@@ -54,6 +75,10 @@ output_dir = mktempdir()
 download_instances(instances_dict, 1, output_dir, ip_address)
 
 # ╔═╡ Cell order:
+# ╟─03d840a8-b426-4910-be0c-8fd0adb2da16
+# ╟─7112e3ff-1037-412c-8df0-f185b16cc749
+# ╟─fe44a1dd-0e9e-4ab0-905b-391e588af4e2
+# ╟─05eb11b8-b3a0-4901-b8e5-b84f0656f04f
 # ╠═2803587a-98e8-11ed-26b9-e9960fe8c897
 # ╠═89c0b998-6a5a-4fd9-a323-35d96855b2a9
 # ╟─f9e214eb-6432-4cf5-ba12-29911c4a161f
