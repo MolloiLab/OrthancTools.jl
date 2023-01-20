@@ -29,7 +29,18 @@ md"""
 get_all_studies(ip_address::String="localhost")
 ```
 
-Given an IP address corresponding to the Orthanc server's (`ip_address`), return an `OrderedDict` of every study name with its corresponding accession number
+#### Arguments
+- `ip_address`: IP address corresponding to the Orthanc server
+
+#### Returns
+- `studies_dict`: An `OrderedDict` of every study name with its corresponding accession number
+
+#### Example
+```julia-repl
+julia> study_dict = get_all_studies("128.000.00.00")
+
+study_dict = OrderedDict("CTP006" => "e44217cc-498e394b-dc380909-a742a65f-51530d58", "2890" => "30c04e76-4965d9e3-9ffd4fdc-b0e84651-325c9074", more...)
+```
 """
 function get_all_studies(ip_address::String="localhost")
 	url = string("http://", ip_address, ":8042")
@@ -57,6 +68,61 @@ end
 # ╔═╡ 11082ead-55a8-48e7-9bbe-7856fa8d7903
 study_dict = get_all_studies(ip_address)
 
+# ╔═╡ 3540e706-ad58-4af2-b7c0-f83ae19edcd3
+md"""
+## Get Series
+"""
+
+# ╔═╡ 2c04e17b-9c6d-4a36-985c-c256a4397a8e
+"""
+```julia 
+get_all_series(
+	study_dict::OrderedDict, 
+	accession_num::String, 
+	ip_address::String="localhost")
+```
+
+#### Arguments
+- `study_dict`: A dictionary of all the studies in this server (see `get_all_studies`)
+- `accession_num`: The accession number for the study of interest
+- `ip_address`: IP address corresponding to the Orthanc server
+
+#### Return
+- `series_dict`: An `OrderedDict` of every study name with its corresponding accession number
+"""
+function get_all_series(
+	study_dict::OrderedDict, 
+	accession_num::String, 
+	ip_address::String="localhost")
+	
+	url = string("http://", ip_address, ":8042")
+	url_study = joinpath(url, "studies", study_dict[accession_num]...)
+	@assert typeof(url_study) == String
+
+	
+	series = JSON.parse(String(HTTP.get(url_study).body))
+	series_dict = OrderedDict{String, Vector}()
+	for ser in series["Series"]
+		url_series = joinpath(url, "series", ser)
+		s = JSON.parse(String(HTTP.get(url_series).body))
+		try
+			series_num = s["MainDicomTags"]["SeriesNumber"]
+			if !haskey(series_dict, series_num)
+				push!(series_dict, series_num => [ser])
+			else
+				push!(series_dict[series_num], ser)
+			end
+		catch
+			@warn "No series number for $ser"
+		end
+	end
+	
+	return series_dict
+end
+
+# ╔═╡ 6c3f471d-9a7b-454c-ab56-c19e6f0db07d
+get_all_series(study_dict, "2475", ip_address)
+
 # ╔═╡ Cell order:
 # ╠═d8578dac-9845-11ed-324c-856950ed40c3
 # ╠═0771ec75-e37b-4fa8-906d-a6b1f3f51d6f
@@ -64,3 +130,6 @@ study_dict = get_all_studies(ip_address)
 # ╟─93bc7b5c-97dc-4166-89e8-490e5366c7cb
 # ╠═8e780f7b-53df-4e0b-bf3d-b4c1094b7b24
 # ╠═11082ead-55a8-48e7-9bbe-7856fa8d7903
+# ╟─3540e706-ad58-4af2-b7c0-f83ae19edcd3
+# ╠═2c04e17b-9c6d-4a36-985c-c256a4397a8e
+# ╠═6c3f471d-9a7b-454c-ab56-c19e6f0db07d
