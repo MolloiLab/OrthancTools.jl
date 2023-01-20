@@ -1,0 +1,5 @@
+[deps]
+DICOM = "a26e6606-dd52-5f6a-a97f-4f611373d757"
+OrthancTools = "d6a53a69-57dd-4bf1-83cc-71c4a7042fcf"
+PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
