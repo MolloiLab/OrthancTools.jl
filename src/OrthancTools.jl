@@ -1,5 +1,5 @@
 module OrthancTools
 
-# Write your package code here.
+include("downloader.jl")
 
 end
