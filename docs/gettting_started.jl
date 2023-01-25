@@ -49,7 +49,7 @@ TableOfContents()
 # ╔═╡ f9e214eb-6432-4cf5-ba12-29911c4a161f
 md"""
 ## Get Studies
-Insert the IP address associated with the Orthanc server into the input box below and then click the Check Box to begin locating all the studies
+Insert the IP address associated with the Orthanc server into the input box below and then click "Submit". When the code is finished, you can inspect the files by clicking on the dictionary.
 """
 
 # ╔═╡ 2b1696f6-4050-4e57-b385-e08e06e0469d
@@ -61,7 +61,7 @@ studies_dict = get_all_studies(ip_address)
 # ╔═╡ fee1654e-9937-4723-aea3-e0b6ecee8ea6
 md"""
 ## Get Series
-Insert the accession number into the input box below and then click the Check Box
+Insert the accession number into the input box below and click "Submit". When the code is finished, you can inspect the files by clicking on the dictionary.
 """
 
 # ╔═╡ f933bec3-70ba-4b9d-adaa-59d8eb183aa1
@@ -73,7 +73,7 @@ series_dict = get_all_series(studies_dict, accession_number, ip_address)
 # ╔═╡ 2da66929-7b74-4dfc-9dc1-840d6c739d6d
 md"""
 ## Get Instance(s)
-You can insert the series number of interest into the input box below and then click the Check Box. When the code is finished, you can inspect the files by clicking on the dictionary and seeing the instances associated with the given series number. Note, some series have multiple instances (scans) while some only have one instance (one scan).
+You can insert the series number of interest into the input box below and then click "Submit". When the code is finished, you can inspect the files by clicking on the dictionary.
 """
 
 # ╔═╡ 7e162ea2-6127-4d23-b844-0d69b80c2b10
@@ -85,7 +85,7 @@ instances_dict = get_all_instances(series_dict, series_num, ip_address)
 # ╔═╡ 512a7103-c925-4d5b-83a3-c7a1c2afc560
 md"""
 # Download DICOM Instance(s)
-Type the folder path that you want to save the DICOM files into (or use a temporary directory via `mktempdir()`) in the code cell below. Then type in the instance number that you want to download and  click the CheckBox to start the download
+Type the folder path below, where you want the DICOM files to be saved (or use a temporary directory via `mktempdir()`) in the code cell below. Then type in the instance number that you want to download and click "Submit".
 """
 
 # ╔═╡ 86bb740b-5593-4951-8fd9-45b88e37bad8
