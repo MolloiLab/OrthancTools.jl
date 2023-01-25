@@ -65,7 +65,7 @@ Insert the accession number into the input box below and then click the Check Bo
 """
 
 # ╔═╡ f933bec3-70ba-4b9d-adaa-59d8eb183aa1
-@bind accession_number confirm(TextField(placeholder="Insert Accession Number"))
+@bind accession_number confirm(TextField(default="2475"))
 
 # ╔═╡ d38a8f79-38c2-4e72-8806-bece1eb63a3d
 series_dict = get_all_series(studies_dict, accession_number, ip_address)
@@ -77,7 +77,7 @@ You can insert the series number of interest into the input box below and then c
 """
 
 # ╔═╡ 7e162ea2-6127-4d23-b844-0d69b80c2b10
-@bind series_num confirm(TextField(placeholder="Insert Series Number"))
+@bind series_num confirm(TextField(default="3"))
 
 # ╔═╡ caa657f6-191f-4379-8d36-1140ed3138cc
 instances_dict = get_all_instances(series_dict, series_num, ip_address)
@@ -92,7 +92,7 @@ Type the folder path that you want to save the DICOM files into (or use a tempor
 output_dir = mktempdir()
 
 # ╔═╡ fdbe618f-e872-4d1f-93c2-bddb0b2ea55c
-@bind instance_num confirm(TextField(placeholder="Insert Instance Number"))
+@bind instance_num confirm(TextField(placeholder="Insert Instance Number (usually 1)"))
 
 # ╔═╡ c90eb6ea-676b-4f0e-9585-fecfe09f0008
 instance_number = parse(Int64, instance_num)
