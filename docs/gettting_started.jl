@@ -18,7 +18,7 @@ end
 # ╠═╡ show_logs = false
 begin
     using Pkg
-    Pkg.activate(".") # Pkg.add([PlutoUI, DICOM]) if downloaded from GitHub
+    Pkg.add([PlutoUI, DICOM])
     using Revise, PlutoUI, DICOM, OrthancTools
 end
 
