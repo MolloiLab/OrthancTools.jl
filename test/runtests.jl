@@ -2,5 +2,5 @@ using OrthancTools
 using Test
 
 @testset "OrthancTools.jl" begin
-    # Write your tests here.
+    @test 1 = 1 # dummy test
 end
