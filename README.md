@@ -7,7 +7,7 @@ Simple Julia package for working with open source DICOM server [Orthanc](https:/
 
 ## Getting Started
 ```julia
-using Pkg; Pkg.add(url=https://github.com/Dale-Black/OrthancTools.jl)
+using Pkg; Pkg.add("OrthancTools") # or Pkg.add(url=https://github.com/Dale-Black/OrthancTools.jl)
 ```
 
 You can also download the example notebook directly from GitHub inside of [Pluto.jl](https://github.com/fonsp/Pluto.jl). Simply launch Pluto and on the start page, copy and paste `https://github.com/Dale-Black/OrthancTools.jl/blob/main/docs/gettting_started.jl` and click "open".
