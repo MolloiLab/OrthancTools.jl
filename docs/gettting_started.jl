@@ -17,8 +17,8 @@ end
 # ╔═╡ 2803587a-98e8-11ed-26b9-e9960fe8c897
 # ╠═╡ show_logs = false
 begin
-    using Pkg
-    Pkg.add([PlutoUI, DICOM])
+    using Pkg; Pkg.activate(mktempdir())
+    Pkg.add(["PlutoUI", "DICOM"])
     using Revise, PlutoUI, DICOM, OrthancTools
 end
 
