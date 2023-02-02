@@ -19,7 +19,8 @@ end
 begin
     using Pkg; Pkg.activate(mktempdir())
     Pkg.add(["PlutoUI", "DICOM"])
-    using Revise, PlutoUI, DICOM, OrthancTools
+	Pkg.add(url="https://github.com/Dale-Black/OrthancTools.jl")
+    using PlutoUI, DICOM, OrthancTools
 end
 
 # ╔═╡ 03d840a8-b426-4910-be0c-8fd0adb2da16
