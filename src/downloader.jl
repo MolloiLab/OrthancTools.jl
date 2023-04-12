@@ -43,14 +43,13 @@ julia> studies_dict = get_all_studies("128.000.00.00")
 studies_dict = OrderedDict("CTP006" => ["e44217cc-498e394b-dc380909-a742a65f-51530d58"], "2890" => ["30c04e76-4965d9e3-9ffd4fdc-b0e84651-325c9074", "30c04e76-4965d9e3-9ffd4fdc-b0e84651-895s9231"], more...)
 ```
 """
-function get_all_studies(ip_address::String="localhost")
-    url = string("http://", ip_address, ":8042")
-    url_studies = joinpath(url, "studies")
+function get_all_studies(ip_address::String="localhost"; show_warnings=false)
+	url_studies = HTTP.URI(scheme="http", host=ip_address, port="8042", path="/studies")
     studies = JSON.parse(String(HTTP.get(url_studies).body))
 
     studies_dict = OrderedDict{String,Vector}()
     for study in studies
-        s = JSON.parse(String(HTTP.get(joinpath(url_studies, study)).body))
+        s = JSON.parse(String(HTTP.get(string(url_studies, "/", study)).body))
         try
             accession_num = s["MainDicomTags"]["AccessionNumber"]
             if !haskey(studies_dict, accession_num)
@@ -59,7 +58,9 @@ function get_all_studies(ip_address::String="localhost")
                 push!(studies_dict[accession_num], study)
             end
         catch
-            @warn "No accession number for $study"
+			if show_warnings
+            	@warn "No accession number for $study"
+			end
         end
     end
 
@@ -68,9 +69,6 @@ end
 
 # ╔═╡ c17095fb-fe4d-458e-91f3-f94c48a785ec
 export get_all_studies
-
-# ╔═╡ 11082ead-55a8-48e7-9bbe-7856fa8d7903
-# studies_dict = get_all_studies(ip_address)
 
 # ╔═╡ 3540e706-ad58-4af2-b7c0-f83ae19edcd3
 md"""
@@ -106,15 +104,14 @@ function get_all_series(
     accession_num::String,
     ip_address::String="localhost")
 
-    url = string("http://", ip_address, ":8042")
-    url_study = joinpath(url, "studies", studies_dict[accession_num]...)
-    @assert typeof(url_study) == String
-
+	url_study = HTTP.URI(scheme="http", host=ip_address, port="8042", path="/studies/$(studies_dict[accession_num]...)")
 
     series = JSON.parse(String(HTTP.get(url_study).body))
     series_dict = OrderedDict{String,Vector}()
     for ser in series["Series"]
-        url_series = joinpath(url, "series", ser)
+		url_series = HTTP.URI(
+			scheme="http", host=ip_address, port="8042", path=string("/series/", ser)
+		)
         s = JSON.parse(String(HTTP.get(url_series).body))
         try
             series_num = s["MainDicomTags"]["SeriesNumber"]
@@ -134,8 +131,8 @@ end
 # ╔═╡ 44b8bcae-9f64-4c1a-a98d-11d61a9fd747
 export get_all_series
 
-# ╔═╡ 6c3f471d-9a7b-454c-ab56-c19e6f0db07d
-# series_dict = get_all_series(studies_dict, "2475", ip_address)
+# ╔═╡ 8044f98d-889f-4e33-98ed-94fe446b3642
+accession_num = "2582"
 
 # ╔═╡ 2b291e5c-dafd-4914-aac7-212c4f8546c4
 md"""
@@ -171,10 +168,12 @@ function get_all_instances(
     series_num::String,
     ip_address::String="localhost")
 
-    url = string("http://", ip_address, ":8042")
+    url = HTTP.URI(scheme="http", host=ip_address, port="8042")
     instances_dict = OrderedDict{String,Vector}()
     for ser in series_dict[series_num]
-        url_series = joinpath(url, "series", ser)
+		url_series = HTTP.URI(
+			scheme="http", host=ip_address, port="8042", path=string("/series/", ser)
+		)
         series = JSON.parse(String(HTTP.get(url_series).body))
         instances = series["Instances"]
         if !haskey(instances_dict, series_num)
@@ -189,8 +188,8 @@ end
 # ╔═╡ 4e6ee284-3ee8-4af9-a7b4-cdfdabf65732
 export get_all_instances
 
-# ╔═╡ 0d8cba11-deb7-4990-a295-b8cdd9070f93
-# instances_dict = get_all_instances(series_dict, "4", ip_address)
+# ╔═╡ 34e8bb07-2e7a-4f71-9b8e-1c35372c4203
+series_num = "5"
 
 # ╔═╡ 8c2c8651-c413-48ab-8ed4-b71c97e83c04
 md"""
@@ -231,10 +230,9 @@ function download_instances(
 	output_directory::String,
 	ip_address::String="localhost")
 
-	url = string("http://", ip_address, ":8042")
 	for (key, value) in instances_dict
 		for i in value[instance_num]
-			url_instance = joinpath(url, "instances", i)
+			url_instance = string("http://", ip_address, ":8042", string("/instances/", i))
 			instance = JSON.parse(String(HTTP.get(url_instance).body))
 			idx = instance["IndexInSeries"]
 			download(joinpath(url_instance, "file"), joinpath(output_directory, "$(idx).dcm"))
@@ -246,12 +244,6 @@ end
 # ╔═╡ 75b6606c-2e33-454b-98b7-a673f265b7ef
 export download_instances
 
-# ╔═╡ 3c7a573d-bc0b-4795-8838-a40dde7a9322
-# output_dir = mktempdir()
-
-# ╔═╡ ab9c97ce-ddf3-4d16-9271-bfc8239b7861
-# download_instances(instances_dict, 1, output_dir, ip_address)
-
 # ╔═╡ Cell order:
 # ╠═d8578dac-9845-11ed-324c-856950ed40c3
 # ╠═0771ec75-e37b-4fa8-906d-a6b1f3f51d6f
@@ -259,17 +251,14 @@ export download_instances
 # ╟─93bc7b5c-97dc-4166-89e8-490e5366c7cb
 # ╠═8e780f7b-53df-4e0b-bf3d-b4c1094b7b24
 # ╠═c17095fb-fe4d-458e-91f3-f94c48a785ec
-# ╠═11082ead-55a8-48e7-9bbe-7856fa8d7903
 # ╟─3540e706-ad58-4af2-b7c0-f83ae19edcd3
 # ╠═2c04e17b-9c6d-4a36-985c-c256a4397a8e
 # ╠═44b8bcae-9f64-4c1a-a98d-11d61a9fd747
-# ╠═6c3f471d-9a7b-454c-ab56-c19e6f0db07d
+# ╠═8044f98d-889f-4e33-98ed-94fe446b3642
 # ╟─2b291e5c-dafd-4914-aac7-212c4f8546c4
 # ╠═9d7bc7f9-2970-4636-a74a-e6b761f8e215
 # ╠═4e6ee284-3ee8-4af9-a7b4-cdfdabf65732
-# ╠═0d8cba11-deb7-4990-a295-b8cdd9070f93
+# ╠═34e8bb07-2e7a-4f71-9b8e-1c35372c4203
 # ╟─8c2c8651-c413-48ab-8ed4-b71c97e83c04
 # ╠═a864c9f7-50e2-4105-8494-48cf9ba1a50b
 # ╠═75b6606c-2e33-454b-98b7-a673f265b7ef
-# ╠═3c7a573d-bc0b-4795-8838-a40dde7a9322
-# ╠═ab9c97ce-ddf3-4d16-9271-bfc8239b7861
