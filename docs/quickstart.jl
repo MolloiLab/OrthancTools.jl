@@ -57,7 +57,7 @@ Insert the accession number into the input box below and click "Submit". When th
 """
 
 # ╔═╡ cc9fb05a-cfd6-45da-89ab-2315ae0cf08d
-@bind accession_number confirm(TextField(default="2475"))
+@bind accession_number confirm(TextField(default="2581"))
 
 # ╔═╡ a07a479a-830a-4a8f-a4de-1dc0b8156d8f
 series_dict = get_all_series(studies_dict, accession_number, ip_address)
@@ -69,10 +69,19 @@ You can insert the series number of interest into the input box below and then c
 """
 
 # ╔═╡ b379470c-d3c8-48b1-875c-2caee044897b
-@bind series_num confirm(TextField(default="3"))
+@bind series_num confirm(TextField(default="1, 2"))
+
+# ╔═╡ 31f97455-006b-4ec7-a6df-0f3980b77835
+series_num_vec = parse.(Int, split(series_num, ","))
 
 # ╔═╡ 8f777827-6ddf-4421-809d-d0d8858542b4
-instances_dict = get_all_instances(series_dict, series_num, ip_address)
+begin
+	instances_dicts = []
+	for i in series_num_vec
+		instances_dict = get_all_instances(series_dict, string(i), ip_address)
+		push!(instances_dicts, instances_dict)
+	end
+end
 
 # ╔═╡ 388bb92b-fc3f-4054-977a-1ca655c16e40
 md"""
@@ -81,24 +90,30 @@ Type the folder path below, where you want the DICOM files to be saved (or use a
 """
 
 # ╔═╡ a8d994d6-cbb0-416c-852b-d0d173195444
-output_dir = mktempdir()
+output_dir = mktempdir() # insert folder path here "Z:\\example\\path\\to\\folder"
 
 # ╔═╡ 6ec25c7e-4982-4f55-ae50-48880be2062c
-@bind instance_num confirm(TextField(placeholder="Insert Instance Number (usually 1)"))
+@bind instance_num confirm(TextField(default="1"))
 
 # ╔═╡ b8747a52-61a2-46ec-b5c6-8f29406251da
 instance_number = parse(Int64, instance_num)
 
 # ╔═╡ 8268df02-e085-4245-a3bc-5fa354bbad4e
-download_instances(instances_dict, instance_number, output_dir, ip_address)
+for i in 1:length(instances_dicts)
+	global output_path = joinpath(output_dir, string(series_num_vec[i]))
+	if !isdir(output_path)
+		mkpath(output_path)
+	end
+	download_instances(instances_dicts[i], instance_number, output_path, ip_address)
+end
 
 # ╔═╡ ece4cb9b-4eee-4317-b835-c803ee2781ef
-dcms = dcmdir_parse(output_dir)
+dcms = dcmdir_parse(output_path)
 
 # ╔═╡ Cell order:
-# ╠═38c7cb4b-b317-4de4-82db-39fcb8117215
 # ╟─8868c105-5209-4479-80cb-bb0423b66524
 # ╟─3089d9a4-389d-45ed-b9f3-7982a88448ee
+# ╠═38c7cb4b-b317-4de4-82db-39fcb8117215
 # ╠═48008e07-b10d-4e37-853f-0169fe2cb4b1
 # ╟─85c694aa-15d9-4da4-8dbe-0a0e02563761
 # ╠═ee188b2c-d928-48be-a52e-d3fbdb3a3f70
@@ -108,6 +123,7 @@ dcms = dcmdir_parse(output_dir)
 # ╠═a07a479a-830a-4a8f-a4de-1dc0b8156d8f
 # ╟─1b64364c-7b47-41d9-aa09-91c37fc95183
 # ╠═b379470c-d3c8-48b1-875c-2caee044897b
+# ╠═31f97455-006b-4ec7-a6df-0f3980b77835
 # ╠═8f777827-6ddf-4421-809d-d0d8858542b4
 # ╟─388bb92b-fc3f-4054-977a-1ca655c16e40
 # ╠═a8d994d6-cbb0-416c-852b-d0d173195444
