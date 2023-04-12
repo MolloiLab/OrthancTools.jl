@@ -235,7 +235,7 @@ function download_instances(
 			url_instance = string("http://", ip_address, ":8042", string("/instances/", i))
 			instance = JSON.parse(String(HTTP.get(url_instance).body))
 			idx = instance["IndexInSeries"]
-			download(string(url_instance, "/", "file"), joinpath(output_directory, "/", "$(idx).dcm"))
+			download(string(url_instance, "/", "file"), joinpath(output_directory, "$(idx).dcm"))
 		end
 	end
 	@info "Files located at $(output_directory)"
